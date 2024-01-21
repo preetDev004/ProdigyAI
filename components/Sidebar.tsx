@@ -3,9 +3,18 @@
 import { Montserrat } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
-import { CodeIcon, ImageIcon, LayoutDashboard, MessageSquare, MusicIcon, SettingsIcon, VideoIcon } from "lucide-react";
+import {
+  CodeIcon,
+  ImageIcon,
+  LayoutDashboard,
+  MessageSquare,
+  MusicIcon,
+  SettingsIcon,
+  VideoIcon,
+} from "lucide-react";
 
 const montserrat = Montserrat({
   weight: "600",
@@ -53,11 +62,12 @@ const routes = [
     lable: "Settings",
     icon: SettingsIcon,
     href: "/settings",
-    color: "text-gray-400",
+    color: "text-gray-300",
   },
 ];
 
 const Sidebar = () => {
+  const pathname = usePathname();
   return (
     <div className="space-y-4 py-4 flex flex-col bg-[#111827] h-full text-white">
       <div className="p-3 py-2 flex-1">
@@ -76,7 +86,12 @@ const Sidebar = () => {
               <Link
                 href={route.href}
                 key={index}
-                className="text-sm group flex justify-start w-full p-3 font-md cursor-pointer hover:text-white hover:bg-white/10 rounded-lg transition"
+                className={cn(
+                  "text-sm group flex justify-start w-full p-3 font-md cursor-pointer hover:text-white  hover:bg-white/10 rounded-lg transition",
+                  pathname === route.href
+                    ? "bg-white/10 text-white"
+                    : "text-zinc-400"
+                )}
               >
                 <div className="flex items-center flex-1">
                   {/* Here route.icon is component imported from lucide */}
