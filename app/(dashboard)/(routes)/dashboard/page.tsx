@@ -36,7 +36,7 @@ const tools = [
     href: "/video",
     color: "text-orange-700",
     bgColor: "bg-orange-700/10",
-    desc: "Convert your ideas into videos with AI",
+    desc: "Transform your ideas into reality by creating innovative videos with AI",
   },
   {
     lable: "Music Generation",
@@ -44,7 +44,7 @@ const tools = [
     href: "/music",
     color: "text-emerald-700",
     bgColor: "bg-emerald-700/10",
-    desc: "Get your first verse with AI from text",
+    desc: "Elevate your musical journey to new heights with AI-generated melodies",
   },
   {
     lable: "Code Generation",
