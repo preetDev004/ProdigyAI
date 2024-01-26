@@ -39,12 +39,11 @@ export const POST = async (req: Request) => {
 
     const response = await openai.images.generate({
         prompt:prompt,
-        model:"dall-e-2",
         n:parseInt(amount,10),
         size:resolution
     })
   
-    return NextResponse.json(response.data, {status:200})
+    return NextResponse.json(response, {status:200})
     // return new NextResponse("Good", {status:200})
 
   } catch (error) {

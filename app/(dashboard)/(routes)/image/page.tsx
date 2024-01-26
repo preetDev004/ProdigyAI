@@ -12,8 +12,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Empty } from "@/components/Empty";
 import { Loader } from "@/components/Loader";
-import { cn } from "@/lib/utils";
-import { ImageIcon } from "lucide-react";
+import { DownloadIcon, ImageIcon } from "lucide-react";
 
 import Heading from "@/components/Heading";
 import {
@@ -24,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Image from "next/image";
-import { Card } from "@/components/ui/card";
+import { Card, CardFooter } from "@/components/ui/card";
 
 const ImagePage = () => {
   const router = useRouter();
@@ -45,10 +44,12 @@ const ImagePage = () => {
     try {
       setImages([]);
       const response = await axios.post("/api/image", values);
-      const urls = response.data.map((image: { url: string }) => {
-        image.url;
+
+      const urls = response.data.data.map((image: { url: string }) => {
+        return image.url;
       });
       setImages(urls);
+
       form.reset();
     } catch (error: any) {
       // TODO: Open pro modal.
@@ -57,6 +58,8 @@ const ImagePage = () => {
       router.refresh();
     }
   };
+
+
   return (
     <div>
       <Heading
@@ -168,16 +171,21 @@ const ImagePage = () => {
             <Empty lable="No Images Generated..." />
           )}
           <div className="grid grif-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
-            {images.map((src, index) => (
+            {images.map((src) => (
               <Card key={src} className="rounded-lg overflow-hidden">
                 <div className="relative aspect-square">
-                <Image
-                  src={src}
-                  alt={`image-${src}`}
-                  fill
-                  className=""
-                />
+                  <Image src={src} alt={`image-${src}`} fill className="" />
                 </div>
+                <CardFooter className="p-2">
+                  <Button
+                    onClick={() => window.open(src)}
+                    variant="secondary"
+                    className="w-full"
+                  >
+                    <DownloadIcon className="h-4 w-4 mr-2" />
+                    Download
+                  </Button>
+                </CardFooter>
               </Card>
             ))}
           </div>
