@@ -22,6 +22,7 @@ import { BotAvatar } from "@/components/BotAvatar";
 const ConversationPage = () => {
   const router = useRouter();
   const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
+  const [isAllowed, setIsAllowed] = useState(true);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,11 +48,16 @@ const ConversationPage = () => {
       });
 
       setMessages((current) => [...current, response.data]);
-      
+      setIsAllowed(true);
+
       form.reset();
     } catch (error: any) {
       // TODO: Open pro modal.
       console.log(error);
+      if (error.response.status === 403) {
+        setIsAllowed(false);
+        form.reset();
+      }
     } finally {
       router.refresh();
     }
@@ -81,7 +87,7 @@ const ConversationPage = () => {
                     <FormControl className="m-0 p-0">
                       <Input
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
-                        disabled={isLoading}
+                        disabled={isLoading || !isAllowed}
                         placeholder="Ask anything... e.g. What is AI?"
                         {...field}
                       />
@@ -91,7 +97,7 @@ const ConversationPage = () => {
               />
               <Button
                 className="col-span-12 lg:col-span-2 2xl:col-span-1 w-full"
-                disabled={isLoading}
+                disabled={isLoading || !isAllowed}
               >
                 Generate
               </Button>
@@ -121,11 +127,15 @@ const ConversationPage = () => {
                   )}
                 >
                   {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
-                  
+
                   <div>
-                    <p className="font-bold text-sm md:text-base">{message.role === "user" ? "You" : "Prodigy"}</p>
-                    <p className="text-sm"><>{message.content}</></p>
-                    </div>
+                    <p className="font-bold text-sm md:text-base">
+                      {message.role === "user" ? "You" : "Prodigy"}
+                    </p>
+                    <p className="text-sm">
+                      <>{message.content}</>
+                    </p>
+                  </div>
                 </div>
               ))}
           </div>

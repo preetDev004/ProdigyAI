@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
+import { checkUserApiUsage, increaseApiUse } from "@/lib/api-limit";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -8,13 +9,11 @@ const openai = new OpenAI({
 
 export const POST = async (req: Request) => {
   try {
-
     const { userId } = auth();
-    
+
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-  
 
     if (!openai.apiKey) {
       return new NextResponse("Open AI API key not configured", {
@@ -24,30 +23,33 @@ export const POST = async (req: Request) => {
 
     // Get the request body contents
     const body = await req.json();
-    const { prompt, amount=1, resolution="512x512" } = body;
+    const { prompt, amount = 1, resolution = "512x512" } = body;
 
-    if(!prompt){
-        return new NextResponse("Prompt is required", {status:400})
+    if (!prompt) {
+      return new NextResponse("Prompt is required", { status: 400 });
     }
-    if(!amount){
-        return new NextResponse("Amount is required", {status:400})
+    if (!amount) {
+      return new NextResponse("Amount is required", { status: 400 });
     }
-    if(!resolution){
-        return new NextResponse("Resolution is required", {status:400})
+    if (!resolution) {
+      return new NextResponse("Resolution is required", { status: 400 });
     }
-  
 
-    const response = await openai.images.generate({
-        prompt:prompt,
-        n:parseInt(amount,10),
-        size:resolution
-    })
-  
-    return NextResponse.json(response, {status:200})
-    // return new NextResponse("Good", {status:200})
+    // Check that we're under our rate limit for this user before proceeding
+    const isUnderLimit = await checkUserApiUsage();
 
+    if (isUnderLimit) {
+      const response = await openai.images.generate({
+        prompt: prompt,
+        n: parseInt(amount, 10),
+        size: resolution,
+      });
+
+      await increaseApiUse();
+      return NextResponse.json(response, { status: 200 });
+    }
+    return new NextResponse("No free credits left.", { status: 403 });
   } catch (error) {
-
     console.log("[IMAGE_ERROR]", error);
     return new NextResponse("Internal server error", { status: 500 });
   }
