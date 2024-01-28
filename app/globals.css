@@ -8,6 +8,21 @@ body,
   height: 100%;
 }
 
+@keyframes ani {
+  0% {
+    background-position: 400%;
+  }
+
+  100% {
+    background-position: 0%;
+  }
+}
+.prog {
+  background-size: 400%;
+  filter: blur(2px);
+  animation: ani 10s linear infinite;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

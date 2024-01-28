@@ -23,7 +23,7 @@ import ReactMarkdown from "react-markdown";
 
 const CodePage = () => {
   
-  
+  const [isAllowed, setIsAllowed] = useState(true);
   const router = useRouter();
   const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -53,11 +53,16 @@ const CodePage = () => {
       });
 
       setMessages((current) => [...current, response.data]);
+      setIsAllowed(true);
 
       form.reset();
     } catch (error: any) {
       // TODO: Open pro modal.
       console.log(error);
+      if (error.response.status === 403) {
+        setIsAllowed(false);
+        form.reset();
+      }
     } finally {
       router.refresh();
     }

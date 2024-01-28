@@ -59,7 +59,7 @@ const ConversationPage = () => {
         form.reset();
       }
     } finally {
-      router.refresh();
+      router.refresh(); // re-hydrate all the server components fetching the newest data!
     }
   };
 
