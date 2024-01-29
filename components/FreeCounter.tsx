@@ -4,9 +4,10 @@ import { MAX_FREE_COUNTS } from "@/constants";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Zap } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 const FreeCounter = ({ apiCount }: { apiCount: number }) => {
+  const proModal = useProModal();
   // prevent hydration error
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -24,7 +25,7 @@ const FreeCounter = ({ apiCount }: { apiCount: number }) => {
             <p>{apiCount}/{MAX_FREE_COUNTS} Free Trials</p>
             <Progress value={(apiCount/MAX_FREE_COUNTS) *100}/>
           </div>
-          <Button className="w-full" variant="premium"><Zap className="w-4 h-4 mr-2"/> Upgrade</Button>
+          <Button onClick={proModal.onOpen} className="w-full" variant="premium"><Zap className="w-4 h-4 mr-2"/> Upgrade</Button>
         </CardContent>
       </Card>
     </div>

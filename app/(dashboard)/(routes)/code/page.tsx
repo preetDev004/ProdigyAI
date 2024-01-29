@@ -18,10 +18,13 @@ import { Loader } from "@/components/Loader";
 import { cn } from "@/lib/utils";
 import { UserAvatar } from "@/components/UserAvatar";
 import { BotAvatar } from "@/components/BotAvatar";
+import { useProModal } from "@/hooks/use-pro-modal";
+
 import ReactMarkdown from "react-markdown";
 
 
 const CodePage = () => {
+  const proModal= useProModal();
   
   const [isAllowed, setIsAllowed] = useState(true);
   const router = useRouter();
@@ -57,10 +60,10 @@ const CodePage = () => {
 
       form.reset();
     } catch (error: any) {
-      // TODO: Open pro modal.
-      console.log(error);
-      if (error.response.status === 403) {
+ 
+      if (error?.response?.status === 403) {
         setIsAllowed(false);
+        proModal.onOpen();
         form.reset();
       }
     } finally {
@@ -92,7 +95,7 @@ const CodePage = () => {
                     <FormControl className="m-0 p-0">
                       <Input
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
-                        disabled={isLoading}
+                        disabled={isLoading || !isAllowed}
                         placeholder="e.g. Simple toggle button using react-hooks."
                         {...field}
                       />
@@ -102,7 +105,7 @@ const CodePage = () => {
               />
               <Button
                 className="col-span-12 lg:col-span-2 2xl:col-span-1 w-full"
-                disabled={isLoading}
+                disabled={isLoading || !isAllowed}
               >
                 Generate
               </Button>

@@ -5,7 +5,14 @@ import Sidebar from "./Sidebar";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
-const MobileSidebar = () => {
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+
+const MobileSidebar = ({ apiCount }: { apiCount: number }) => {
+  const theme = useTheme();
+  const isMatch = useMediaQuery(theme.breakpoints.down("md"));
+
+
   // solving hydration error
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
@@ -16,14 +23,14 @@ const MobileSidebar = () => {
   }
 
   return (
-    <Sheet>
+    <Sheet open={isMatch? undefined:false}>
       <SheetTrigger>
         <Button variant={"ghost"} size={"icon"} className="md:hidden">
           <Menu />
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="p-0">
-        <Sidebar />
+        <Sidebar apiCount={apiCount} />
       </SheetContent>
     </Sheet>
   );

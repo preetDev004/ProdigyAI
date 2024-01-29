@@ -13,6 +13,7 @@ import { useState } from "react";
 import { Empty } from "@/components/Empty";
 import { Loader } from "@/components/Loader";
 import { DownloadIcon, ImageIcon } from "lucide-react";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 import Heading from "@/components/Heading";
 import {
@@ -26,6 +27,7 @@ import Image from "next/image";
 import { Card, CardFooter } from "@/components/ui/card";
 
 const ImagePage = () => {
+  const proModal= useProModal();
   const router = useRouter();
   const [images, setImages] = useState<string[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -52,8 +54,10 @@ const ImagePage = () => {
 
       form.reset();
     } catch (error: any) {
-      // TODO: Open pro modal.
-      console.log(error);
+      if (error?.response?.status === 403) {
+        proModal.onOpen();
+        form.reset();
+      }
     } finally {
       router.refresh();
     }

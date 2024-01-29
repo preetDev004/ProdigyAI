@@ -18,8 +18,10 @@ import { Loader } from "@/components/Loader";
 import { cn } from "@/lib/utils";
 import { UserAvatar } from "@/components/UserAvatar";
 import { BotAvatar } from "@/components/BotAvatar";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 const ConversationPage = () => {
+  const proModal= useProModal();
   const router = useRouter();
   const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
   const [isAllowed, setIsAllowed] = useState(true);
@@ -52,10 +54,9 @@ const ConversationPage = () => {
 
       form.reset();
     } catch (error: any) {
-      // TODO: Open pro modal.
-      console.log(error);
-      if (error.response.status === 403) {
+      if (error?.response?.status === 403) {
         setIsAllowed(false);
+        proModal.onOpen();
         form.reset();
       }
     } finally {
