@@ -1,7 +1,6 @@
 import { auth } from "@clerk/nextjs";
 import prismadb from "@/lib/prismadb";
 import { MAX_FREE_COUNTS } from "@/constants";
-import { use } from "react";
 
 export const increaseApiUse = async () => {
   const { userId } = auth();
