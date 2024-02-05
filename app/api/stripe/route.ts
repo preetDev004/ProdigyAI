@@ -57,8 +57,8 @@ export const GET = async () => {
       }
     });
     return new NextResponse(JSON.stringify({ url: stripeSession.url }));
-  } catch (error) {
-    console.log("[STRIPE_ERROR]", error);
+  } catch (error:any) {
+    console.log("[STRIPE_ERROR]", error.message);
     return new NextResponse("Internal erro", { status: 500 });
   }
 };

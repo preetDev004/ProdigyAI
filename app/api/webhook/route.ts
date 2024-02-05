@@ -8,13 +8,13 @@ import { stripe } from "@/lib/stripe";
 
 export const POST = async (req: Request) => {
   const body = await req.text();
-  const signatures = headers().get("Stripe-Signature") as string;
+  const signature = headers().get("Stripe-Signature") as string;
 
   let event: Stripe.Event;
   try {
     event = stripe.webhooks.constructEvent(
       body,
-      signatures,
+      signature,
       process.env.STRIPR_WEBHOOKS_SECRET!
     );
   } catch (error: any) {
@@ -25,8 +25,7 @@ export const POST = async (req: Request) => {
   // we mostly have two events either we have existing subscription (billing portal) or new subscription.
   const session = event.data.object as Stripe.Checkout.Session;
 
-  // first-time upgrade
-  if (event.type === "checkout.session.completed") {
+  if (event.type === "invoice.payment_succeeded") {
     const subscription = await stripe.subscriptions.retrieve(
       session.subscription as string
     );
@@ -37,11 +36,36 @@ export const POST = async (req: Request) => {
     }
     // we cannot use clerk directly here because this hook will be running saprately from our
     // application. Henca, we passed userId in metadata to keep track!
-    await prismadb.userSubscription.create({
-      data: {
-        userId: session?.metadata?.userId,
+    const existingSubscription = await prismadb.userSubscription.findUnique({
+      where: {
         stripeSubscriptionId: subscription.id,
-        stripeCustomerId: subscription.customer as string,
+      },
+    });
+    if (!existingSubscription) {
+      await prismadb.userSubscription.create({
+        data: {
+          userId: session?.metadata?.userId,
+          stripeSubscriptionId: subscription.id,
+          stripeCustomerId: subscription.customer as string,
+          stripePriceId: subscription.items.data[0].price.id,
+          stripeCurrentPeriodEnd: new Date(
+            subscription.current_period_end * 1000
+          ),
+        },
+      });
+    }
+  }
+
+  if (event.type === "checkout.session.completed") {
+    const subscription = await stripe.subscriptions.retrieve(
+      session.subscription as string
+    );
+
+    await prismadb.userSubscription.update({
+      where: {
+        stripeSubscriptionId: subscription.id,
+      },
+      data: {
         stripePriceId: subscription.items.data[0].price.id,
         stripeCurrentPeriodEnd: new Date(
           subscription.current_period_end * 1000
@@ -50,20 +74,6 @@ export const POST = async (req: Request) => {
     });
   }
 
-  // Upgraded subscription. they had on before.
-  if(event.type === "invoice.payment_succeeded"){
-    const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
-
-    await prismadb.userSubscription.update({
-        where:{
-            stripeSubscriptionId:subscription.id
-        },
-        data:{
-            stripePriceId: subscription.items.data[0].price.id,
-            stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000)
-        }
-    })
-    
-  }
-  return new NextResponse(null,{status:200})
+  
+  return new NextResponse(null, { status: 200 });
 };

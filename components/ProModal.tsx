@@ -14,7 +14,6 @@ import { Badge } from "@/components/ui/badge";
 import {
   Check,
   CodeIcon,
-  Gem,
   ImageIcon,
   MessageSquare,
   MusicIcon,
@@ -24,7 +23,9 @@ import {
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
-
+import axios from "axios";
+import { useState } from "react";
+import { Loader } from "@/components/Loader";
 const tools = [
   {
     lable: "Conversation",
@@ -71,9 +72,22 @@ const tools = [
 
 const ProModal = () => {
   const proModal = useProModal();
+  const [loading, setLoading] = useState(false)
+  const onSubscribe = async()=>{
+    try {
+      setLoading(true)
+      const response =await axios.get('/api/stripe')
+      window.location.href = response.data.url;
+      
+    } catch (error) {
+      console.log(`[STRIPE_CLIENT_ERROR]: ${error}`)
+    }finally{
+      setLoading(false)
+    }
+  }
   return (
     <Dialog open={proModal.isOpen} onOpenChange={proModal.onClose}>
-      <DialogContent>
+      {!loading ? <DialogContent>
         <DialogHeader>
           <DialogTitle className="flex justify-center items-center flex-col gap-y-4 pb-2">
             <div className="flex items-center font-bold py-1 gap-x-2">
@@ -106,11 +120,12 @@ const ProModal = () => {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button className="w-full focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 font-bold" variant="premium">
+          <Button onClick={onSubscribe} className="w-full focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 font-bold" variant="premium">
             Upgrade <Zap size={20} strokeWidth={3} absoluteStrokeWidth className="w-4 h-4 ml-2" />{" "}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </DialogContent>:
+      <DialogContent><Loader/></DialogContent>}
     </Dialog>
   );
 };
