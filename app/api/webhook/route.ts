@@ -30,23 +30,18 @@ export const POST = async (req: Request) => {
       session.subscription as string
     );
 
-    if (!session?.metadata?.userId) {
-      // we dont know to whom this subscription belong
-      return new NextResponse("User ID is required", { status: 400 });
-    }
-    // we cannot use clerk directly here because this hook will be running saprately from our
-    // application. Henca, we passed userId in metadata to keep track!
     const existingSubscription = await prismadb.userSubscription.findUnique({
       where: {
         stripeSubscriptionId: subscription.id,
       },
     });
-    if (!existingSubscription) {
-      await prismadb.userSubscription.create({
-        data: {
-          userId: session?.metadata?.userId,
+    if (existingSubscription) {
+      console.log("--Worked--\n");
+      await prismadb.userSubscription.update({
+        where: {
           stripeSubscriptionId: subscription.id,
-          stripeCustomerId: subscription.customer as string,
+        },
+        data: {
           stripePriceId: subscription.items.data[0].price.id,
           stripeCurrentPeriodEnd: new Date(
             subscription.current_period_end * 1000
@@ -61,11 +56,17 @@ export const POST = async (req: Request) => {
       session.subscription as string
     );
 
-    await prismadb.userSubscription.update({
-      where: {
-        stripeSubscriptionId: subscription.id,
-      },
+    if (!session?.metadata?.userId) {
+      // we dont know to whom this subscription belong
+      return new NextResponse("User ID is required", { status: 400 });
+    }
+    // we cannot use clerk directly here because this hook will be running saprately from our
+    // application. Hence, we passed userId in metadata to keep track!
+    await prismadb.userSubscription.create({
       data: {
+        userId: session?.metadata?.userId,
+        stripeSubscriptionId: subscription.id,
+        stripeCustomerId: subscription.customer as string,
         stripePriceId: subscription.items.data[0].price.id,
         stripeCurrentPeriodEnd: new Date(
           subscription.current_period_end * 1000
@@ -74,6 +75,5 @@ export const POST = async (req: Request) => {
     });
   }
 
-  
   return new NextResponse(null, { status: 200 });
 };
