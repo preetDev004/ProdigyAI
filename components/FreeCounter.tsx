@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Zap } from "lucide-react";
 import { useProModal } from "@/hooks/use-pro-modal";
 
-const FreeCounter = ({ apiCount }: { apiCount: number }) => {
+const FreeCounter = ({ apiCount, isPro=false }: { apiCount: number, isPro:Boolean }) => {
   const proModal = useProModal();
   // prevent hydration error
   const [mounted, setMounted] = useState(false);
@@ -14,6 +14,9 @@ const FreeCounter = ({ apiCount }: { apiCount: number }) => {
     setMounted(true)
   }, [])
   if (!mounted) {
+    return null;
+  }
+  if(isPro){
     return null;
   }
   

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-const MobileSidebar = ({ apiCount }: { apiCount: number }) => {
+const MobileSidebar = ({ apiCount=0, isPro=false }: { apiCount: number , isPro:Boolean}) => {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -30,7 +30,7 @@ const MobileSidebar = ({ apiCount }: { apiCount: number }) => {
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="p-0">
-        <Sidebar apiCount={apiCount} />
+        <Sidebar isPro={isPro} apiCount={apiCount} />
       </SheetContent>
     </Sheet>
   );

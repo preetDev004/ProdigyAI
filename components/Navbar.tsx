@@ -1,10 +1,11 @@
+"use client"
 import { UserButton } from "@clerk/nextjs";
 import MobileSidebar from "@/components/MobileSidebar";
 
-const Navbar = ({apiCount} : {apiCount:number}) => {
+const Navbar = ({apiCount, isPro=false} : {apiCount:number, isPro:Boolean}) => {
   return (
     <div className="flex items-center p-4">
-      <MobileSidebar apiCount={apiCount} />
+      <MobileSidebar isPro={isPro} apiCount={apiCount} />
 
       <div className="flex w-full justify-end">
         <UserButton afterSignOutUrl="/" />

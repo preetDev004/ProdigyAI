@@ -36,7 +36,6 @@ export const POST = async (req: Request) => {
       },
     });
     if (existingSubscription) {
-      console.log("--Worked--\n");
       await prismadb.userSubscription.update({
         where: {
           stripeSubscriptionId: subscription.id,

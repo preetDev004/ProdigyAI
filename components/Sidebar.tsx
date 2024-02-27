@@ -69,9 +69,11 @@ const routes = [
 
 interface SidebarProps {
   apiCount: number;
+  isPro: Boolean
 }
 
-const Sidebar = ({ apiCount = 0 }: SidebarProps) => {
+const Sidebar = ({ apiCount = 0, isPro=false }: SidebarProps) => {
+  
   const pathname = usePathname();
   return (
     <div className="space-y-4 py-4 flex flex-col bg-[#111827] h-full text-white">
@@ -108,7 +110,7 @@ const Sidebar = ({ apiCount = 0 }: SidebarProps) => {
         </div>
       </div>
 
-      <FreeCounter apiCount={apiCount}/>
+      <FreeCounter apiCount={apiCount} isPro={isPro}/>
     </div>
   );
 };

@@ -120,7 +120,7 @@ const ProModal = () => {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button onClick={onSubscribe} className="w-full focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 font-bold" variant="premium">
+          <Button disabled={loading} onClick={onSubscribe} className="w-full focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 font-bold" variant="premium">
             Upgrade <Zap size={20} strokeWidth={3} absoluteStrokeWidth className="w-4 h-4 ml-2" />{" "}
           </Button>
         </DialogFooter>

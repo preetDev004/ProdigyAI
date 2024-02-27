@@ -94,7 +94,7 @@ const VideoPage = () => {
         <div className="space-y-4 mt-4">
           {isLoading && (
             <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
-              <Loader />
+              <Loader msg="Preparing the response..." />
             </div>
           )}
           {!video && !isLoading && <Empty lable="No Video Generated..." />}
