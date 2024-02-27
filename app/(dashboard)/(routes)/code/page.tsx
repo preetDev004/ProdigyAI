@@ -21,6 +21,7 @@ import { BotAvatar } from "@/components/BotAvatar";
 import { useProModal } from "@/hooks/use-pro-modal";
 
 import ReactMarkdown from "react-markdown";
+import toast from "react-hot-toast";
 
 
 const CodePage = () => {
@@ -65,6 +66,8 @@ const CodePage = () => {
         setIsAllowed(false);
         proModal.onOpen();
         form.reset();
+      }else{
+        toast.error("Somthing went wrong!",{duration:2000})
       }
     } finally {
       router.refresh();

@@ -26,6 +26,7 @@ import { Button } from "./ui/button";
 import axios from "axios";
 import { useState } from "react";
 import { Loader } from "@/components/Loader";
+import toast from "react-hot-toast";
 const tools = [
   {
     lable: "Conversation",
@@ -80,7 +81,9 @@ const ProModal = () => {
       window.location.href = response.data.url;
       
     } catch (error) {
-      console.log(`[STRIPE_CLIENT_ERROR]: ${error}`)
+      
+      toast.error("Somthing went wrong!",{duration:2000})
+      
     }finally{
       setLoading(false)
     }

@@ -15,6 +15,7 @@ import { useState } from "react";
 import { Empty } from "@/components/Empty";
 import { Loader } from "@/components/Loader";
 import { useProModal } from "@/hooks/use-pro-modal";
+import toast from "react-hot-toast";
 
 const MusicPage = () => {
   const proModal= useProModal();
@@ -41,6 +42,9 @@ const MusicPage = () => {
       if (error?.response?.status === 403) {
         proModal.onOpen();
         form.reset();
+      }
+      else{
+        toast.error("Somthing went wrong!",{duration:2000})
       }
     } finally {
       router.refresh();
