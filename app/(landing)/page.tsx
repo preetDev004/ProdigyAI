@@ -1,9 +1,6 @@
-// "use client"
-import { Button } from "@/components/ui/button";
-// import { useSession } from "@clerk/nextjs";
-import Link from "next/link";
-// import { useRouter } from "next/navigation";
-
+import LandingContent from '@/components/LandingContent';
+import LandingHero from '@/components/LandingHero';
+import LandingNavbar from '@/components/LandingNavbar'
 const LandingPage = () => {
   // const {isSignedIn} = useSession();
   // const router = useRouter()
@@ -12,14 +9,10 @@ const LandingPage = () => {
   // }
   return (
     <>
-      <div>LandingPage (Unprotected)</div>
-      <div>
-        <Link href="/sign-in">
-          <Button variant="secondary"> Log in</Button>
-        </Link>
-        <Link href="/sign-up">
-          <Button variant="secondary"> Sign up</Button>
-        </Link>
+      <div className="h-full">
+        <LandingNavbar/>
+        <LandingHero/>
+        <LandingContent/>
       </div>
     </>
   );

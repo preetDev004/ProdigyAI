@@ -1,3 +1,4 @@
+import CrispProvider from "@/components/CrispProvider";
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 import { getUserApiUsage } from "@/lib/api-limit";
@@ -7,6 +8,8 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   const apiCount = await getUserApiUsage();
   const isPro = await checkSubscription()
   return (
+    <>
+    <CrispProvider/>
     <div className="h-full relative">
       {/* sidebar */}
       <div className="hidden md:flex md:w-72 h-full md:flex-col md:fixed md:inset-y-0 z-[40] bg-gray-900">
@@ -20,6 +23,7 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
         {children}
       </main>
     </div>
+    </>
   );
 };
 
