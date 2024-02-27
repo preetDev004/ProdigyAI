@@ -168,7 +168,7 @@ const ImagePage = () => {
         <div className="space-y-4 mt-4">
           {isLoading && (
             <div className="p-20">
-              <Loader />
+              <Loader msg="Preparing the response..."/>
             </div>
           )}
           {images.length === 0 && !isLoading && (

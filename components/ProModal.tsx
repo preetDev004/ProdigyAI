@@ -125,7 +125,7 @@ const ProModal = () => {
           </Button>
         </DialogFooter>
       </DialogContent>:
-      <DialogContent><Loader/></DialogContent>}
+      <DialogContent><Loader msg="Please Wait..."/></DialogContent>}
     </Dialog>
   );
 };

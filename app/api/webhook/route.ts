@@ -15,7 +15,7 @@ export const POST = async (req: Request) => {
     event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.STRIPR_WEBHOOKS_SECRET!
+      process.env.STRIPE_WEBHOOKS_SECRET!
     );
   } catch (error: any) {
     return new NextResponse(`[WEBHOOK_ERROR]: ${error.message}`, {
